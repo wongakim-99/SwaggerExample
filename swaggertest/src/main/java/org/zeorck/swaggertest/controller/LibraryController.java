@@ -1,5 +1,9 @@
 package org.zeorck.swaggertest.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.zeorck.swaggertest.model.Author;
 import org.zeorck.swaggertest.model.Book;
 import org.zeorck.swaggertest.model.Member;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "책, 작가, 멤버 체크", description = "책, 작가, 멤버 체크 API")
 @RestController
 @RequestMapping(value = "/api/library")
 @RequiredArgsConstructor
@@ -31,8 +36,12 @@ public class LibraryController {
 
     private final LibraryService libraryService;
 
+    @Operation(summary = "서점의 모든 책 조회", description = "서버의 작동 여부 확인을 위해 책 조회")
+    @ApiResponse(responseCode = "200", description = "책 조회 성공")
+    @ApiResponse(responseCode = "400", description = "책을 찾을 수 없음")
+    @ApiResponse(responseCode = "404", description = "잘못된 요청 파라미터")
     @GetMapping("/book")
-    public ResponseEntity readBooks(@RequestParam(required = false) String isbn) {
+    public ResponseEntity readBooks(@Parameter(description = "조회할 책의 ISBN 코드") @RequestParam(required = false) String isbn) {
         if (isbn == null) {
             return ResponseEntity.ok(libraryService.readBooks());
         }
